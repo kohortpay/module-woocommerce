@@ -101,8 +101,8 @@ if [ ! -e /var/www/html/.wp-installed ]; then
     echo "WP is not installed. Let's try installing it."
     wp core install --path=/var/www/html --url=$WORDPRESS_URL --title=$WORDPRESS_TITLE --admin_user=$WORDPRESS_ADMIN_USER --admin_password=$WORDPRESS_ADMIN_PASSWORD --admin_email=$WORDPRESS_ADMIN_EMAIL --allow-root
     
-    echo "WP installed. Installing WooCommerce"
-    wp plugin install woocommerce --activate --allow-root
+    echo "WP installed. Installing WooCommerce 8.2"
+    wp plugin install woocommerce --version=8.2.0 --activate --allow-root
     wp option set woocommerce_onboarding_opt_in "yes" --allow-root
     wp option set woocommerce_onboarding_profile "" --allow-root
     wp option set woocommerce_store_address "61 boulevard des dames" --allow-root
@@ -111,12 +111,16 @@ if [ ! -e /var/www/html/.wp-installed ]; then
     wp option set woocommerce_store_postcode "13002" --allow-root
     wp option set woocommerce_default_country "FR" --allow-root
     wp wc tool run install_pages --user=admin --allow-root
+    chown -R www-data:www-data /var/www/html/wp-content/
     
     echo "WooCommerce installed. Installing WooCommerce Sample Data"
     wp plugin install wordpress-importer --activate --allow-root
     wp import /var/www/html/wp-content/plugins/woocommerce/sample-data/sample_products.xml --allow-root --user=admin --authors=skip
 
     touch /var/www/html/.wp-installed
+
+    echo "Install KohortPay plugin"
+    wp plugin install /tmp/kohortpay.zip --activate --allow-root
 fi
 
 exec "$@"
