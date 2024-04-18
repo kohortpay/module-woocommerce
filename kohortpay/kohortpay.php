@@ -162,6 +162,7 @@ function woocommerce_gateway_kohortpay_init()
       $order_data = $order->get_data();
       $line_items = $order->get_items();
       $shipping_methods = $order->get_shipping_methods();
+      $discounts = $order->get_coupon_codes();
       $items = [];
 
       // Products
@@ -188,9 +189,9 @@ function woocommerce_gateway_kohortpay_init()
       }
 
       // Discounts
-      if ($order_data['discount_total'] > 0) {
+      foreach ($discounts as $discount) {
         $items[] = [
-          'name' => __('Discount', 'kohortpay'),
+          'name' => $discount,
           'quantity' => 1,
           'price' => $order_data['discount_total'] * -100,
           'type' => 'DISCOUNT',
@@ -201,7 +202,7 @@ function woocommerce_gateway_kohortpay_init()
         'customerFirstName' => $order_data['billing']['first_name'],
         'customerLastName' => $order_data['billing']['last_name'],
         'customerEmail' => $order_data['billing']['email'],
-        'customerPhoneNumber' => $order_data['billing']['phone'],
+        #'customerPhoneNumber' => $order_data['billing']['phone'],
         'successUrl' => $this->get_return_url($order),
         'cancelUrl' => wc_get_checkout_url(),
         'locale' => get_locale(),
@@ -246,9 +247,6 @@ function woocommerce_gateway_kohortpay_init()
         $_GET['payment_id']
       )
     );
-
-    // Save payment ID to the order as custom fields
-    update_post_meta($order_id, 'KohortPay Payment ID', $_GET['payment_id']);
   }
   add_filter('woocommerce_thankyou', 'kohortpay_order_received', 10, 1);
 }
