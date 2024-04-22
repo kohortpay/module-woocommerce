@@ -101,8 +101,9 @@ if [ ! -e /var/www/html/.wp-installed ]; then
     echo "WP is not installed. Let's try installing it."
     wp core install --path=/var/www/html --url=$WORDPRESS_URL --title=$WORDPRESS_TITLE --admin_user=$WORDPRESS_ADMIN_USER --admin_password=$WORDPRESS_ADMIN_PASSWORD --admin_email=$WORDPRESS_ADMIN_EMAIL --allow-root
     
-    echo "WP installed. Installing WooCommerce 8.2"
-    wp plugin install woocommerce --version=8.2.0 --activate --allow-root
+    echo "WP installed. Installing WooCommerce"
+    wp plugin install woocommerce --version=8.6.1 --activate --allow-root
+    #wp plugin install woocommerce --version=8.2.0 --activate --allow-root
     wp option set woocommerce_onboarding_opt_in "yes" --allow-root
     wp option set woocommerce_onboarding_profile "" --allow-root
     wp option set woocommerce_store_address "61 boulevard des dames" --allow-root
