@@ -82,4 +82,4 @@ msgstr "Désolé, une erreur s'est produite lors du paiement. Veuillez réessaye
 
 #: kohortpay.php:246
 msgid "KohortPay payment %s completed."
-msgstr "Le paiement KohortPay % a bien été finalisé"
+msgstr "Le paiement KohortPay %s a bien été finalisé"
