@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-04-18T13:27:12+00:00\n"
+"POT-Creation-Date: 2024-04-22T14:02:42+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: kohortpay\n"
@@ -31,7 +31,7 @@ msgstr ""
 
 #. Author of the plugin
 #: kohortpay.php
-#: kohortpay.php:46
+#: kohortpay.php:47
 msgid "KohortPay"
 msgstr ""
 
@@ -40,46 +40,48 @@ msgstr ""
 msgid "http://www.kohortpay.com/"
 msgstr ""
 
-#: kohortpay.php:47
+#: kohortpay.php:48
 msgid "Social payment method : Pay less, together. Turn your customer into your brand advocates."
 msgstr ""
 
-#: kohortpay.php:55
+#: kohortpay.php:56
+#: checkout.js:15
 msgid "Kohortpay : Pay, refer & save money"
 msgstr ""
 
-#: kohortpay.php:56
+#: kohortpay.php:57
+#: checkout.js:17
 msgid "Save money and so does your friend, from the first friend you invite."
 msgstr ""
 
-#: kohortpay.php:75
+#: kohortpay.php:76
 msgid "Activate"
 msgstr ""
 
-#: kohortpay.php:77
+#: kohortpay.php:78
 msgid "Must be enabled to display KohortPay in your checkout page."
 msgstr ""
 
-#: kohortpay.php:84
+#: kohortpay.php:85
 msgid "API Secret Key"
 msgstr ""
 
-#: kohortpay.php:86
+#: kohortpay.php:87
 msgid "Found in KohortPay Dashboard > Developer settings. Start with sk_ or sk_test (for test mode)."
 msgstr ""
 
-#: kohortpay.php:93
+#: kohortpay.php:94
 msgid "Minimum amount"
 msgstr ""
 
-#: kohortpay.php:95
+#: kohortpay.php:96
 msgid "Minimum total order amount to display KohortPay in your checkout page."
 msgstr ""
 
-#: kohortpay.php:126
+#: kohortpay.php:127
 msgid "Sorry, an error occurred while processing your payment. Please try again."
 msgstr ""
 
-#: kohortpay.php:246
+#: kohortpay.php:287
 msgid "KohortPay payment %s completed."
 msgstr ""

@@ -1,5 +1,17 @@
 <?php
-
+/*
+Plugin Name: WooCommerce KohortPay Payment Gateway
+Plugin URI: https://docs.kohortpay.com/plateformes-e-commerce/woocommerce
+Description: Extends WooCommerce with an KohortPay payment gateway.
+Version: 1.1.0
+Author: KohortPay
+Author URI: http://www.kohortpay.com/
+Copyright: © 2024-2034 KohortPay.
+License: MIT
+License URI: https://github.com/kohortpay/module-woocommerce?tab=MIT-1-ov-file#readme
+Text Domain: kohortpay
+Domain Path: /languages
+*/
 use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType;
 
 final class Kohortpay_Gateway_Blocks extends AbstractPaymentMethodType
@@ -34,7 +46,16 @@ final class Kohortpay_Gateway_Blocks extends AbstractPaymentMethodType
       true
     );
     if (function_exists('wp_set_script_translations')) {
-      wp_set_script_translations('kohortpay-blocks-integration');
+      wp_set_script_translations(
+        'kohortpay-blocks-integration',
+        'kohortpay',
+        plugin_dir_path(__FILE__) . 'languages'
+      );
+      load_plugin_textdomain(
+        'kohortpay',
+        false,
+        dirname(plugin_basename(__FILE__)) . '/languages'
+      );
     }
     return ['kohortpay-blocks-integration'];
   }

@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce KohortPay Payment Gateway
 Plugin URI: https://docs.kohortpay.com/plateformes-e-commerce/woocommerce
 Description: Extends WooCommerce with an KohortPay payment gateway.
-Version: 1.0.0
+Version: 1.1.0
 Author: KohortPay
 Author URI: http://www.kohortpay.com/
 Copyright: © 2024-2034 KohortPay.
@@ -236,14 +236,12 @@ function woocommerce_add_gateway_kohortpay_gateway($methods)
 }
 
 /**
- * Display KohortPay payment method if the total order amount is greater than the minimum amount
+ * Rules to display KohortPay in the checkout page
  */
-add_filter(
-  'woocommerce_available_payment_gateways',
-  'kohortpay_minimum_amount'
-);
-function kohortpay_minimum_amount($available_gateways)
+add_filter('woocommerce_available_payment_gateways', 'kohortpay_display_rules');
+function kohortpay_display_rules($available_gateways)
 {
+  // Hide KohortPay if the total order amount is less than the minimum amount
   if (
     isset($available_gateways['kohortpay']) &&
     isset(WC()->cart) &&
@@ -252,6 +250,23 @@ function kohortpay_minimum_amount($available_gateways)
   ) {
     unset($available_gateways['kohortpay']);
   }
+
+  // Hide KohortPay if the currency is not supported
+  if (
+    isset($available_gateways['kohortpay']) &&
+    !in_array(get_woocommerce_currency(), ['EUR'])
+  ) {
+    unset($available_gateways['kohortpay']);
+  }
+
+  // Hide KohortPay is secret key is not set
+  if (
+    isset($available_gateways['kohortpay']) &&
+    empty($available_gateways['kohortpay']->get_option('secret_key'))
+  ) {
+    unset($available_gateways['kohortpay']);
+  }
+
   return $available_gateways;
 }
 

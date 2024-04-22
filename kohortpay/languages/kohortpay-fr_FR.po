@@ -1,5 +1,3 @@
-# Copyright (C) 2024 KohortPay
-# This file is distributed under the MIT.
 msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce KohortPay Payment Gateway 1.0.0\n"
@@ -11,6 +9,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2024-04-18T13:27:12+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Language: \n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: kohortpay\n"
 
@@ -31,7 +30,7 @@ msgstr "Extends WooCommerce with an KohortPay payment gateway."
 
 #. Author of the plugin
 #: kohortpay.php
-#: kohortpay.php:46
+#: kohortpay.php:47
 msgid "KohortPay"
 msgstr "KohortPay"
 
@@ -40,46 +39,48 @@ msgstr "KohortPay"
 msgid "http://www.kohortpay.com/"
 msgstr "http://www.kohortpay.com/"
 
-#: kohortpay.php:47
+#: kohortpay.php:48
 msgid "Social payment method : Pay less, together. Turn your customer into your brand advocates."
 msgstr "Mode de paiement social : Payez moins, ensemble. Transformez vos clients en défenseurs de votre marque."
 
-#: kohortpay.php:55
+#: kohortpay.php:56
+#: checkout.js:15
 msgid "Kohortpay : Pay, refer & save money"
 msgstr "Kohortpay : Payer, parrainer & économiser"
 
-#: kohortpay.php:56
+#: kohortpay.php:57
+#: checkout.js:17
 msgid "Save money and so does your friend, from the first friend you invite."
 msgstr "Économiser et faites économiser, dès la première personne parrainée."
 
-#: kohortpay.php:75
+#: kohortpay.php:76
 msgid "Activate"
 msgstr "Activation"
 
-#: kohortpay.php:77
+#: kohortpay.php:78
 msgid "Must be enabled to display KohortPay in your checkout page."
 msgstr "Doit être activé pour afficher KohortPay sur votre page de paiement."
 
-#: kohortpay.php:84
+#: kohortpay.php:85
 msgid "API Secret Key"
 msgstr "Clé secrète API"
 
-#: kohortpay.php:86
+#: kohortpay.php:87
 msgid "Found in KohortPay Dashboard > Developer settings. Start with sk_ or sk_test (for test mode)."
 msgstr "Trouvé dans KohortPay Dashboard > Paramètres du développeur. Commencez par sk_ ou sk_test (pour le mode test)."
 
-#: kohortpay.php:93
+#: kohortpay.php:94
 msgid "Minimum amount"
 msgstr "Montant minimum"
 
-#: kohortpay.php:95
+#: kohortpay.php:96
 msgid "Minimum total order amount to display KohortPay in your checkout page."
 msgstr "Montant total minimum de la commande pour afficher KohortPay sur votre page de paiement."
 
-#: kohortpay.php:126
+#: kohortpay.php:127
 msgid "Sorry, an error occurred while processing your payment. Please try again."
 msgstr "Désolé, une erreur s'est produite lors du paiement. Veuillez réessayer."
 
-#: kohortpay.php:246
+#: kohortpay.php:287
 msgid "KohortPay payment %s completed."
 msgstr "Le paiement KohortPay %s a bien été finalisé"
