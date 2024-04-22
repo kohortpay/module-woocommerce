@@ -173,7 +173,11 @@ function woocommerce_gateway_kohortpay_init()
           'description' => strip_tags($product->get_description()),
           'quantity' => $item->get_quantity(),
           'price' => $product->get_price() * 100,
-          'image_url' => wp_get_attachment_url($product->get_image_id()),
+          'image_url' =>
+            wp_get_attachment_image_src(
+              $product->get_image_id(),
+              'shop_thumbnail'
+            )[0] ?? wc_placeholder_img_src(),
           'type' => 'PRODUCT',
         ];
       }
