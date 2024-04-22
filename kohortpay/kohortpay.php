@@ -231,6 +231,25 @@ function woocommerce_gateway_kohortpay_init()
   );
 
   /**
+   * Display KohortPay payment method if the total order amount is greater than the minimum amount
+   */
+  function kohortpay_minimum_amount($available_gateways)
+  {
+    if (
+      isset($available_gateways['kohortpay']) &&
+      WC()->cart->total <
+        $available_gateways['kohortpay']->get_option('minimum_amount')
+    ) {
+      unset($available_gateways['kohortpay']);
+    }
+    return $available_gateways;
+  }
+  add_filter(
+    'woocommerce_available_payment_gateways',
+    'kohortpay_minimum_amount'
+  );
+
+  /**
    * Change order payment status to paid when success URL is called with parameter payment_id and save it to the order
    */
   function kohortpay_order_received($order_id)
