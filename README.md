@@ -60,7 +60,7 @@ The module and this repository is under MIT License.
 ### Compabilities and Restrictions
 - Only FR and EN languages available.
 - Only EUR currency available.
-- Works and has been tested with WooCommerce 8.2 (should work with other WooCommerce versions but not tested, use at your own risk).
+- Works and has been tested with WooCommerce 8.2 & 8.6 (should work with other WooCommerce versions but not tested, use at your own risk).
 - You should use only 2 decimals for your price.
 
 ### Features
