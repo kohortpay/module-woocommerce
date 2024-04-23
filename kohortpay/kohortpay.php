@@ -188,7 +188,9 @@ function woocommerce_gateway_kohortpay_init()
         $items[] = [
           'name' => $shipping_method->get_method_title(),
           'quantity' => 1,
-          'price' => $this->cleanPrice($shipping_method->get_total()),
+          'price' => $this->cleanPrice(
+            $shipping_method->get_total() + $shipping_method->get_total_tax()
+          ),
           'type' => 'SHIPPING',
         ];
       }
@@ -198,7 +200,10 @@ function woocommerce_gateway_kohortpay_init()
         $items[] = [
           'name' => $discount,
           'quantity' => 1,
-          'price' => $this->cleanPrice($order_data['discount_total']) * -1,
+          'price' =>
+            $this->cleanPrice(
+              $order->get_discount_total() + $order->get_discount_tax()
+            ) * -1,
           'type' => 'DISCOUNT',
         ];
       }
