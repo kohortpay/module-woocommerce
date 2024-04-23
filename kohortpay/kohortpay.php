@@ -173,7 +173,7 @@ function woocommerce_gateway_kohortpay_init()
           'name' => strip_tags($product->get_name()),
           'description' => strip_tags($product->get_description()),
           'quantity' => $item->get_quantity(),
-          'price' => $product->get_price() * 100,
+          'price' => $this->cleanPrice($product->get_price()),
           'image_url' =>
             wp_get_attachment_image_src(
               $product->get_image_id(),
@@ -188,7 +188,7 @@ function woocommerce_gateway_kohortpay_init()
         $items[] = [
           'name' => $shipping_method->get_method_title(),
           'quantity' => 1,
-          'price' => $shipping_method->get_total() * 100,
+          'price' => $this->cleanPrice($shipping_method->get_total()),
           'type' => 'SHIPPING',
         ];
       }
@@ -198,7 +198,7 @@ function woocommerce_gateway_kohortpay_init()
         $items[] = [
           'name' => $discount,
           'quantity' => 1,
-          'price' => $order_data['discount_total'] * -100,
+          'price' => $this->cleanPrice($order_data['discount_total']) * -1,
           'type' => 'DISCOUNT',
         ];
       }
@@ -211,13 +211,24 @@ function woocommerce_gateway_kohortpay_init()
         'successUrl' => $this->get_return_url($order),
         'cancelUrl' => wc_get_checkout_url(),
         'locale' => get_locale(),
-        'amountTotal' => $order_data['total'] * 100,
+        'amountTotal' => $this->cleanPrice($order_data['total']),
         'lineItems' => $items,
         'metadata' => [
           'order_id' => $order_data['id'],
           'customer_id' => $order_data['customer_id'],
         ],
       ];
+    }
+
+    /**
+     * Clean price to avoid price with more than 2 decimals.
+     */
+    private function cleanPrice($price)
+    {
+      $price = number_format($price, 2, '.', '');
+      $price = $price * 100;
+
+      return $price;
     }
   }
 }
