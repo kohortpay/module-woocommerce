@@ -31,7 +31,7 @@ services:
       #WORDPRESS_DEBUG: 1
     volumes:
       - wordpress:/var/www/html
-      #- ./kohortpay:/var/www/html/wp-content/plugins/kohortpay
+      - ./kohortpay:/var/www/html/wp-content/plugins/kohortpay
     depends_on:
       - db
 
