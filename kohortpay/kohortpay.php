@@ -38,7 +38,9 @@ function kohortpay_module_init()
     // Send order information to KohortPay API when the order status is processing
     add_action(
       'woocommerce_order_status_processing',
-      'kohortpay_send_order_to_api'
+      'kohortpay_send_order_to_api',
+      10,
+      1
     );
   }
 }
@@ -50,14 +52,18 @@ function kohortpay_send_order_to_api($order_id)
   $order = wc_get_order($order_id);
 
   // Do not send the order to the KohortPay API if the module is disabled
-  if (get_option('kohortpay_enabled') !== 'yes') {
+  if (get_option('kohortpay_enabled', 'no') !== 'yes') {
     return;
   }
 
   // Skip sending the order to KohortPay API if the total amount is below the configured minimum threshold
-  if ($order->get_total() < get_option('kohortpay_minimum_amount')) {
+  if ($order->get_total() < get_option('kohortpay_minimum_amount', 30)) {
     return;
   }
+
+  // Add a custom order note
+  $order->add_order_note(__('Sending order to KohortPay API.', 'kohortpay'));
+  $order->save();
 
   // Send the order to the KohortPay API
   $response = wp_remote_post('https://api.kohortpay.dev/checkout-sessions', [
@@ -127,7 +133,7 @@ function kohortpay_get_settings()
       'desc' => '',
       'id' => 'kohortpay_settings_section_title',
     ],
-    'enable_kohortpay' => [
+    'kohortpay_enabled' => [
       'name' => __('Enable Referral Program', 'kohortpay'),
       'type' => 'checkbox',
       'desc' => __(
@@ -136,13 +142,13 @@ function kohortpay_get_settings()
       ),
       'id' => 'kohortpay_enabled',
     ],
-    'api_secret_key' => [
+    'kohortpay_api_secret_key' => [
       'name' => __('API Secret Key', 'kohortpay'),
       'type' => 'password',
       'desc' => __('Enter your KohortPay API Secret Key.', 'kohortpay'),
       'id' => 'kohortpay_api_secret_key',
     ],
-    'minimum_order_amount' => [
+    'kohortpay_minimum_amount' => [
       'name' => __('Minimum Order Amount (€)', 'kohortpay'),
       'type' => 'number',
       'desc' => __(
@@ -174,8 +180,6 @@ function kohortpay_validate_coupon($valid, $coupon)
 
   // Check if the coupon code starts with "KHTPAY-"
   if (strpos($coupon_code, 'khtpay-') === 0) {
-    // coupon_code = khtpay-test-f2880fe9
-    // Make it KHTPAY-test-F2880FE9
     $coupon_code = str_replace('TEST', 'test', strtoupper($coupon_code));
 
     wc_add_notice(
@@ -290,7 +294,8 @@ function getData($order)
     'customerLastName' => $order_data['billing']['last_name'],
     'customerEmail' => $order_data['billing']['email'],
     'customerPhoneNumber' => $order_data['billing']['phone'],
-    'clientReferenceId' => $order_data['id'],
+    'clientReferenceId' => (string) $order_data['id'],
+    'paymentClientReferenceId' => (string) $order_data['id'],
     'locale' => get_locale(),
     'amountTotal' => cleanPrice($order_data['total']),
     'lineItems' => $items,
@@ -364,4 +369,31 @@ function getErrorMessageByCode($errorCode)
     );
 
   return $errorMessage . ' ' . $defaultSuffixErrorMessage;
+}
+
+/**
+ * Automatically mark the order as paid if the payment method is 'cheque'
+ */
+
+add_action('woocommerce_thankyou', 'auto_complete_check_payment_orders', 10, 1);
+
+function auto_complete_check_payment_orders($order_id)
+{
+  if (!$order_id) {
+    return;
+  }
+
+  $order = wc_get_order($order_id);
+
+  // Check if the order payment method is 'cheque'
+  if ($order->get_payment_method() === 'cheque') {
+    // Update order status to processing
+    $order->update_status(
+      'processing',
+      __('Order marked as processing by custom function.', 'woocommerce')
+    );
+
+    // Mark order as paid
+    $order->payment_complete();
+  }
 }
