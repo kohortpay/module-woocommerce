@@ -224,18 +224,16 @@ function kohortpay_validate_coupon($valid, $coupon)
         $cashbackValue = WC()->cart->total * ($cashbackValue / 100);
       }
 
-      // Display a success message and indicate the cashback amount
+      // Set the coupon amount to the cashback amount
+      // Add notice to the cart
+
       if ($cashbackValue > 0) {
-        wc_add_notice(
-          __('Cashback unlocked:', 'kohortpay') .
-            ' ' .
-            wc_price($cashbackValue),
-          'success'
-        );
+        // Set the cashback value in session
+        WC()->session->set('kohortpay_cashback', $cashbackValue);
       }
 
       // Remove the coupon from the cart
-      WC()->cart->remove_coupon($coupon_code);
+      //WC()->cart->remove_coupon($coupon_code);
 
       // Return true to indicate the coupon is valid
       return true;
@@ -436,13 +434,11 @@ function kohortpay_add_script_to_thankyou_page($order_id)
 // Provide fake data for the coupon
 function kohortpay_fake_coupon_data($data, $coupon_code)
 {
-  // Check if the coupon code starts with "KHTPAY-"
   if (strpos($coupon_code, 'khtpay-') === 0) {
-    // Define fake coupon data
     $data = [
       'id' => 0, // Fake ID
       'code' => $coupon_code,
-      'amount' => '0', // Discount amount
+      'amount' => 0, // Display amount of 5€
       'discount_type' => 'fixed_cart', // Discount type
       'description' => 'Simulated KohortPay coupon',
       'date_expires' => null,
@@ -471,3 +467,39 @@ add_filter(
   10,
   2
 );
+
+// Override the coupon discount amount display
+add_filter(
+  'woocommerce_cart_totals_coupon_html',
+  'kohortpay_override_coupon_display',
+  10,
+  3
+);
+
+function kohortpay_override_coupon_display(
+  $coupon_html,
+  $coupon,
+  $discount_amount_html
+) {
+  if (strpos($coupon->get_code(), 'khtpay-') === 0) {
+    // Display a fixed amount of 5€ without affecting the actual discount
+    $coupon_html =
+      '<span class="amount">' .
+      __('Cashback unlocked:', 'kohortpay') .
+      ' ' .
+      wc_price(WC()->session->get('kohortpay_cashback')) .
+      '</span>';
+
+    // Add a link to remove the coupon
+    $remove_url = esc_url(
+      add_query_arg('remove_coupon', $coupon->get_code(), wc_get_cart_url())
+    );
+    $coupon_html .=
+      ' <a href="' .
+      $remove_url .
+      '" class="remove-coupon">' .
+      __('Remove', 'kohortpay') .
+      '</a>';
+  }
+  return $coupon_html;
+}
