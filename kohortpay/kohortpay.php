@@ -397,3 +397,29 @@ function auto_complete_check_payment_orders($order_id)
     $order->payment_complete();
   }
 }
+
+add_action(
+  'woocommerce_thankyou',
+  'kohortpay_add_script_to_thankyou_page',
+  20,
+  1
+);
+
+function kohortpay_add_script_to_thankyou_page($order_id)
+{
+  if (!$order_id) {
+    return;
+  }
+
+  $order = wc_get_order($order_id);
+  $order_total = $order->get_total();
+  $minimum_amount = get_option('kohortpay_minimum_amount', 30);
+
+  // Check if the order total is greater than the minimum amount
+  if ($order_total > $minimum_amount) {
+    // Output the script with the order ID
+    echo '<script src="https://discovery.kohortpay.com/modal.min.js" data-id="' .
+      esc_attr($order_id) .
+      '"></script>';
+  }
+}
