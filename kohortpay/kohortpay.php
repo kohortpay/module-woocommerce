@@ -75,7 +75,11 @@ function kohortpay_send_order_to_api($order_id)
   ]);
 
   // Check for errors
-  if (is_wp_error($response)) {
+  if (
+    is_wp_error($response) ||
+    wp_remote_retrieve_response_code($response) < 200 ||
+    wp_remote_retrieve_response_code($response) >= 300
+  ) {
     error_log('KohortPay API error: ' . $response->get_error_message());
   } else {
     $response_code = wp_remote_retrieve_response_code($response);
@@ -180,12 +184,10 @@ function kohortpay_validate_coupon($valid, $coupon)
 
   // Check if the coupon code starts with "KHTPAY-"
   if (strpos($coupon_code, 'khtpay-') === 0) {
-    $coupon_code = str_replace('TEST', 'test', strtoupper($coupon_code));
+    // Simulate the existence of the coupon
+    $valid = true;
 
-    wc_add_notice(
-      'kohortpay_validate_coupon function called.' . $coupon_code,
-      'notice'
-    );
+    $coupon_code = str_replace('TEST', 'test', strtoupper($coupon_code));
 
     // Make an API call to validate the coupon
     $response = wp_remote_post(
@@ -200,33 +202,40 @@ function kohortpay_validate_coupon($valid, $coupon)
     // Check for errors in the API response
     if (
       is_wp_error($response) ||
-      wp_remote_retrieve_response_code($response) !== 200
+      wp_remote_retrieve_response_code($response) < 200 ||
+      wp_remote_retrieve_response_code($response) >= 300
     ) {
       // Display an error message
       $errorResponse = json_decode(wp_remote_retrieve_body($response), true);
       $errorCode = $errorResponse['error']['code'] ?? 'UNKNOWN_ERROR';
+
       wc_add_notice(getErrorMessageByCode($errorCode), 'error');
 
       // Return false to indicate the coupon is not valid
       return false;
     } else {
-      $body = wp_remote_retrieve_body($response);
-      $data = json_decode($body, true);
+      $data = json_decode(wp_remote_retrieve_body($response), true);
 
       $cashbackType = $data['discount_type'] ?? 'PERCENTAGE';
       $cashbackValue = $data['current_discount_level']['value'] ?? 0.0;
-      $cartTotal = WC()->cart->get_total();
 
       // If cashback type is percentage, display the cashback amount in amount
       if ($cashbackType === 'PERCENTAGE') {
-        $cashbackValue = $cartTotal * ($cashbackValue / 100);
+        $cashbackValue = WC()->cart->total * ($cashbackValue / 100);
       }
 
       // Display a success message and indicate the cashback amount
-      wc_add_notice(
-        __('Cashback unlocked:', 'kohortpay') . ' ' . wc_price($cashbackValue),
-        'success'
-      );
+      if ($cashbackValue > 0) {
+        wc_add_notice(
+          __('Cashback unlocked:', 'kohortpay') .
+            ' ' .
+            wc_price($cashbackValue),
+          'success'
+        );
+      }
+
+      // Remove the coupon from the cart
+      WC()->cart->remove_coupon($coupon_code);
 
       // Return true to indicate the coupon is valid
       return true;
@@ -235,7 +244,7 @@ function kohortpay_validate_coupon($valid, $coupon)
 
   return $valid;
 }
-add_filter('woocommerce_coupon_is_valid', 'kohortpay_validate_coupon', 99, 2);
+add_filter('woocommerce_coupon_is_valid', 'kohortpay_validate_coupon', 10, 2);
 
 /**
  * Get order data to send to KohortPay API
@@ -423,3 +432,42 @@ function kohortpay_add_script_to_thankyou_page($order_id)
       '"></script>';
   }
 }
+
+// Provide fake data for the coupon
+function kohortpay_fake_coupon_data($data, $coupon_code)
+{
+  // Check if the coupon code starts with "KHTPAY-"
+  if (strpos($coupon_code, 'khtpay-') === 0) {
+    // Define fake coupon data
+    $data = [
+      'id' => 0, // Fake ID
+      'code' => $coupon_code,
+      'amount' => '0', // Discount amount
+      'discount_type' => 'fixed_cart', // Discount type
+      'description' => 'Simulated KohortPay coupon',
+      'date_expires' => null,
+      'usage_limit' => null,
+      'usage_count' => 0,
+      'individual_use' => false,
+      'product_ids' => [],
+      'exclude_product_ids' => [],
+      'usage_limit_per_user' => null,
+      'limit_usage_to_x_items' => null,
+      'free_shipping' => false,
+      'product_categories' => [],
+      'exclude_product_categories' => [],
+      'exclude_sale_items' => false,
+      'minimum_amount' => '',
+      'maximum_amount' => '',
+      'email_restrictions' => [],
+    ];
+  }
+
+  return $data;
+}
+add_filter(
+  'woocommerce_get_shop_coupon_data',
+  'kohortpay_fake_coupon_data',
+  10,
+  2
+);
