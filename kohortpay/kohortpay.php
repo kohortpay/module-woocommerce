@@ -298,8 +298,10 @@ function getData($order)
   // Check for a coupon code starting with 'khtpay-'
   foreach ($coupon_codes as $coupon_code) {
     if (strpos($coupon_code, 'khtpay-') === 0) {
-      $payment_group_share_id = strtoupper(
-        str_replace('TEST', 'test', $coupon_code)
+      $payment_group_share_id = str_replace(
+        'TEST',
+        'test',
+        strtoupper($coupon_code)
       );
       break;
     }
