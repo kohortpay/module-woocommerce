@@ -1,6 +1,6 @@
 # Official KohortPay WooCommerce module
 
-This module adds a new payment method to WooCommerce: `KohortPay`, which allows you to lower your acquisition costs by turning your customers into your brands advocates. They will have the opportunity to invite all their friends to buy more on your store in exchange for cashback.
+This module adds a referral program to WooCommerce: `KohortPay`, which allows you to lower your acquisition costs by turning your customers into your brands advocates. They will have the opportunity to invite all their friends to buy more on your store in exchange for cashback.
 
 
 ## Table of content
@@ -40,7 +40,7 @@ This module adds a new payment method to WooCommerce: `KohortPay`, which allows 
 
 ### Description
 
-KohortPay lets your customers pay, refer and save on every purchase. Cut your customer acquisition costs in half while offering your customers a social and fun brand experience. And just like that, your checkout becomes so koool.
+KohortPay lets your customers refer and save on every purchase. Cut your customer acquisition costs in half while offering your customers a social and fun brand experience. 
 
 ### Benefits
 
@@ -52,7 +52,7 @@ KohortPay lets your customers pay, refer and save on every purchase. Cut your cu
 ## Module overview
 
 ### Version
-Current version is 1.2.0. See all [releases here](https://github.com/kohortpay/module-woocommerce/releases).
+Current version is 1.3.0. See all [releases here](https://github.com/kohortpay/module-woocommerce/releases).
 
 ### Licence
 The module and this repository is under MIT License. 
@@ -64,10 +64,9 @@ The module and this repository is under MIT License.
 - You should use only 2 decimals for your price.
 
 ### Features
-- Add a new payment method that you customer will love (Pay less, together)
-- Redirect to an awesome and customized payment page (using you customer cart details).
+- Add a new referral program that you customer will love.
 - Enable/disable the module by a simple switch through the settings.
-- Possibility to set minimun amount, under which the payment is disabled. 
+- Possibility to set minimun amount, under which the referral program is disabled. 
 - Easy way to switch live/test mode by filling you API secret key (sk or sk_test).
 - Handle API errors (with more details if WooCommerce is in debug mode).
 
@@ -100,7 +99,7 @@ Coming soon...
 
 ### Activation
 
-You can display or hide the KohortPay payment method from you checkout page using this configuration (enabled/disabled).
+You can enable or disable the KohortPay referral program using this configuration.
 
 ### API Secret Key
 
@@ -109,7 +108,7 @@ Start with sk_ or sk_test (for test mode).
 
 ### Minimum amount
 
-You can define here the total order minimum amount to display the KohortPay payment method (minimum 30€).
+You can define here the total order minimum amount to send the order in the referral program (default 30€).
 
 ## Demo
 
@@ -156,7 +155,7 @@ The stack is based on Bitnami Docker image.
 3. Install the module ([see instruction above](#installation))
 4. Configure the module ([see instructions above](#configuration))
 5. Go back to the frontend (http://localhost/) and proceed to the checkout with enough products in your cart (to reach minimum amount defined in settings).
-6. At the Step 4, select KohortPay as a payment method and place the order. You should be redirected to KohortPay payment page. Enjoy!
+6. When the order is complete and paid, you should receive an email with your referral code.
 
 ### Stopping WooCommerce
 
