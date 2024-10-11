@@ -403,8 +403,8 @@ function getErrorMessageByCode($errorCode)
 /**
  * Automatically mark the order as paid if the payment method is 'cheque'
  */
-
-add_action('woocommerce_thankyou', 'auto_complete_check_payment_orders', 10, 1);
+// TODO: Uncomment this to test the referral program
+//add_action('woocommerce_thankyou', 'auto_complete_check_payment_orders', 10, 1);
 
 function auto_complete_check_payment_orders($order_id)
 {
