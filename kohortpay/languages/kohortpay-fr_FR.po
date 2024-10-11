@@ -11,6 +11,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.5\n"
 
+msgid "Enable Referral Program"
+msgstr "Activer le programme de parrainage"
+
+msgid "Referral program"
+msgstr "Programme de parrainage"
+
+msgid "Extends WooCommerce with a referral program using cashback."
+msgstr "Améliore WooCommerce avec un programme de parrainage utilisant le cashback."
+
 msgid "Enable KohortPay referral program using cashback."
 msgstr "Activer le programme de parrainage KohortPay en utilisant le cashback."
 
