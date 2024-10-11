@@ -66,7 +66,7 @@ function kohortpay_send_order_to_api($order_id)
   $order->save();
 
   // Send the order to the KohortPay API
-  $response = wp_remote_post('https://api.kohortpay.dev/checkout-sessions', [
+  $response = wp_remote_post('https://api.kohortpay.com/checkout-sessions', [
     'body' => wp_json_encode(getData($order)),
     'headers' => [
       'Content-Type' => 'application/json',
@@ -187,7 +187,7 @@ function kohortpay_validate_coupon($valid, $coupon)
 
     // Make an API call to validate the coupon
     $response = wp_remote_post(
-      'https://api.kohortpay.dev/payment-groups/' . $coupon_code . '/validate',
+      'https://api.kohortpay.com/payment-groups/' . $coupon_code . '/validate',
       [
         'headers' => [
           'Authorization' => 'Bearer ' . get_option('kohortpay_api_secret_key'),
