@@ -75,15 +75,11 @@ function kohortpay_send_order_to_api($order_id)
   ]);
 
   // Check for errors
-  if (
-    is_wp_error($response) ||
-    wp_remote_retrieve_response_code($response) < 200 ||
-    wp_remote_retrieve_response_code($response) >= 300
-  ) {
+  if (is_wp_error($response)) {
     error_log('KohortPay API error: ' . $response->get_error_message());
   } else {
     $response_code = wp_remote_retrieve_response_code($response);
-    if ($response_code !== 200) {
+    if ($response_code < 200 || $response_code >= 300) {
       error_log(
         'KohortPay API error response: ' . wp_remote_retrieve_body($response)
       );
