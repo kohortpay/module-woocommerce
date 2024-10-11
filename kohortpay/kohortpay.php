@@ -282,6 +282,11 @@ function getData($order)
 
   // Discounts
   foreach ($discounts as $discount) {
+    // Skip discounts that start with 'khtpay'
+    if (strpos($discount, 'khtpay') === 0) {
+      continue;
+    }
+
     $items[] = [
       'name' => $discount,
       'quantity' => 1,
@@ -291,6 +296,22 @@ function getData($order)
       'type' => 'DISCOUNT',
     ];
   }
+
+  $data = [
+    'customerFirstName' => $order_data['billing']['first_name'],
+    'customerLastName' => $order_data['billing']['last_name'],
+    'customerEmail' => $order_data['billing']['email'],
+    'customerPhoneNumber' => $order_data['billing']['phone'],
+    'clientReferenceId' => (string) $order_data['id'],
+    'paymentClientReferenceId' => (string) $order_data['id'],
+    'locale' => get_locale(),
+    'amountTotal' => cleanPrice($order_data['total']),
+    'lineItems' => $items,
+    'metadata' => [
+      'order_id' => $order_data['id'],
+      'customer_id' => $order_data['customer_id'],
+    ],
+  ];
 
   $coupon_codes = $order->get_coupon_codes();
   $payment_group_share_id = '';
@@ -307,22 +328,11 @@ function getData($order)
     }
   }
 
-  return [
-    'customerFirstName' => $order_data['billing']['first_name'],
-    'payment_group_share_id' => $payment_group_share_id,
-    'customerLastName' => $order_data['billing']['last_name'],
-    'customerEmail' => $order_data['billing']['email'],
-    'customerPhoneNumber' => $order_data['billing']['phone'],
-    'clientReferenceId' => (string) $order_data['id'],
-    'paymentClientReferenceId' => (string) $order_data['id'],
-    'locale' => get_locale(),
-    'amountTotal' => cleanPrice($order_data['total']),
-    'lineItems' => $items,
-    'metadata' => [
-      'order_id' => $order_data['id'],
-      'customer_id' => $order_data['customer_id'],
-    ],
-  ];
+  if (!empty($payment_group_share_id)) {
+    $data['payment_group_share_id'] = $payment_group_share_id;
+  }
+
+  return $data;
 }
 
 /**
