@@ -292,8 +292,22 @@ function getData($order)
     ];
   }
 
+  $coupon_codes = $order->get_coupon_codes();
+  $payment_group_share_id = '';
+
+  // Check for a coupon code starting with 'khtpay-'
+  foreach ($coupon_codes as $coupon_code) {
+    if (strpos($coupon_code, 'khtpay-') === 0) {
+      $payment_group_share_id = strtoupper(
+        str_replace('TEST', 'test', $coupon_code)
+      );
+      break;
+    }
+  }
+
   return [
     'customerFirstName' => $order_data['billing']['first_name'],
+    'payment_group_share_id' => $payment_group_share_id,
     'customerLastName' => $order_data['billing']['last_name'],
     'customerEmail' => $order_data['billing']['email'],
     'customerPhoneNumber' => $order_data['billing']['phone'],
