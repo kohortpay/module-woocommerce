@@ -248,7 +248,6 @@ function getData($order)
   $order_data = $order->get_data();
   $line_items = $order->get_items();
   $shipping_methods = $order->get_shipping_methods();
-  $discounts = $order->get_coupon_codes();
   $items = [];
 
   // Products
@@ -281,18 +280,23 @@ function getData($order)
   }
 
   // Discounts
-  foreach ($discounts as $discount) {
-    // Skip discounts that start with 'khtpay'
-    if (strpos($discount, 'khtpay') === 0) {
+  foreach ($order->get_items('coupon') as $coupon_item) {
+    // Skip discounts that start with 'kht'
+    if (strpos($coupon_item->get_code(), 'kht') === 0) {
+      continue;
+    }
+
+    $coupon_amount =
+      $coupon_item->get_discount() + $coupon_item->get_discount_tax();
+
+    if ($coupon_amount <= 0) {
       continue;
     }
 
     $items[] = [
-      'name' => $discount,
+      'name' => $coupon_item->get_code(),
       'quantity' => 1,
-      'price' =>
-        cleanPrice($order->get_discount_total() + $order->get_discount_tax()) *
-        -1,
+      'price' => cleanPrice($coupon_amount) * -1,
       'type' => 'DISCOUNT',
     ];
   }
@@ -340,8 +344,8 @@ function getData($order)
  */
 function cleanPrice($price)
 {
-  $price = number_format($price, 2, '.', '');
   $price = $price * 100;
+  $price = round($price, 0);
 
   return $price;
 }
